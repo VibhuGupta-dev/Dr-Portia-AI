@@ -33,9 +33,6 @@ In India, over **70% of the rural population faces doctor shortages**. Dr. Porti
 **Fallback System**  
 - Ensures continuous service even if Flask is down  
 
-> ![Diagram Placeholder](link-to-diagram.png)  
-> *(Optional: Replace with an actual diagram showing React → Node.js → Flask → Response flow)*
-
 ---
 
 ## Features 🌟
