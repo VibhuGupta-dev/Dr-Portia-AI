@@ -1,26 +1,41 @@
-import React, { useState, useEffect } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
-import Profile from "../component/profile";
+import React, { useState, useEffect } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
+import Profile from '../component/profile';
 
 function Dashboard() {
-  const [inputText, setInputText] = useState("");
+  const [inputText, setInputText] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [backendStatus, setBackendStatus] = useState("checking");
+  const [backendStatus, setBackendStatus] = useState('checking');
+  const [showHistory, setShowHistory] = useState(false);
 
-  const { logout, isAuthenticated } = useAuth0();
+  const { logout, isAuthenticated, user } = useAuth0();
 
   useEffect(() => {
     checkBackendStatus();
-  }, []);
+    if (isAuthenticated) fetchHistory();
+  }, [isAuthenticated]);
 
   const checkBackendStatus = async () => {
     try {
-      const response = await fetch("https://dr-portia-ai.onrender/health");
-      setBackendStatus(response.ok ? "online" : "offline");
+      const response = await fetch('http://localhost:5000/health');
+      setBackendStatus(response.ok ? 'online' : 'offline');
     } catch {
-      setBackendStatus("offline");
+      setBackendStatus('offline');
+    }
+  };
+
+  const fetchHistory = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/analyses?userId=${user.sub}`);
+      const result = await response.json();
+      if (result.success) {
+        setHistory(result.data);
+      }
+    } catch (err) {
+      console.error('History fetch error:', err);
     }
   };
 
@@ -36,7 +51,7 @@ function Dashboard() {
     setLoading(true);
 
     const userMessage = {
-      type: "user",
+      type: 'user',
       text: inputText,
       image: selectedImage ? URL.createObjectURL(selectedImage) : null,
     };
@@ -45,30 +60,32 @@ function Dashboard() {
 
     try {
       await checkBackendStatus();
-      if (backendStatus === "offline") throw new Error("Server Offline");
+      if (backendStatus === 'offline') throw new Error('Server Offline');
 
       const formData = new FormData();
-      if (inputText.trim()) formData.append("text", inputText.trim());
-      if (selectedImage) formData.append("medical_image", selectedImage);
+      if (inputText.trim()) formData.append('text', inputText.trim());
+      if (selectedImage) formData.append('medical_image', selectedImage);
+      if (isAuthenticated) formData.append('userId', user.sub);
 
-      const response = await fetch("https://dr-portia-ai.onrender/api/analyze-medical", {
-        method: "POST",
+      const response = await fetch('http://localhost:5000/api/analyze-medical', {
+        method: 'POST',
         body: formData,
       });
 
       const result = await response.json();
 
       const botMessage = {
-        type: "bot",
-        text: response.ok && result.success ? result.result.analysis : result.error || "Error",
+        type: 'bot',
+        text: response.ok && result.success ? result.result.analysis : result.error || 'Error',
         meta: result.result || null,
       };
 
       setMessages((prev) => [...prev, botMessage]);
+      if (isAuthenticated) fetchHistory(); // Refresh history
     } catch (err) {
-      setMessages((prev) => [...prev, { type: "bot", text: `❌ ${err.message}` }]);
+      setMessages((prev) => [...prev, { type: 'bot', text: `❌ ${err.message}` }]);
     } finally {
-      setInputText("");
+      setInputText('');
       setSelectedImage(null);
       setLoading(false);
     }
@@ -92,11 +109,33 @@ function Dashboard() {
               </div>
             </div>
           )}
-          <div className="text-sm">{backendStatus === "online" ? "🟢 Online" : "🔴 Offline"}</div>
+          <div className="text-sm mb-4">
+            {backendStatus === 'online' ? '🟢 Online' : '🔴 Offline'}
+          </div>
+          <button
+            onClick={() => setShowHistory(!showHistory)}
+            className="w-full px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm text-gray-300 mb-2"
+          >
+            {showHistory ? 'Hide History' : 'Show History'}
+          </button>
+          {showHistory && (
+            <div className="max-h-96 overflow-y-auto space-y-2">
+              {history.length === 0 && <p className="text-gray-400 text-sm">No history available.</p>}
+              {history.map((item, i) => (
+                <div key={i} className="p-3 bg-gray-800 rounded-lg text-sm">
+                  <p><strong>Input:</strong> {item.userInput.text || 'Image only'}</p>
+                  {item.userInput.imageFilename && (
+                    <p><strong>Image:</strong> {item.userInput.imageFilename}</p>
+                  )}
+                  <p><strong>Response:</strong> {item.aiResponse.analysis.slice(0, 100)}...</p>
+                  <p><strong>Date:</strong> {new Date(item.timestamp).toLocaleString()}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-
         <button
-          onClick={() => logout({ returnTo: window.location.origin })}
+          onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
           className="px-4 py-2 bg-red-600 hover:bg-red-500 rounded-lg font-semibold shadow-md"
         >
           🚪 Logout
@@ -113,39 +152,42 @@ function Dashboard() {
             </div>
           )}
           {messages.map((msg, i) => (
-            <div
-              key={i}
-              className={`flex ${msg.type === "user" ? "justify-end" : "justify-start"}`}
-            >
-              <div
-                className={`max-w-lg p-4 rounded-2xl shadow-md ${
-                  msg.type === "user"
-                    ? "bg-cyan-600 text-white rounded-br-none"
-                    : "bg-gray-800 text-gray-200 rounded-bl-none"
-                }`}
-              >
-                <p className="whitespace-pre-line">{msg.text}</p>
-                {msg.image && (
-                  <img
-                    src={msg.image}
-                    alt="uploaded"
-                    className="mt-3 max-w-[200px] rounded-lg border border-gray-700"
-                  />
-                )}
-                {msg.meta && (
-                  <div className="mt-3 text-sm text-gray-400 border-t border-gray-700 pt-2 space-y-1">
-                    <p>
-                      <strong>Type:</strong> {msg.meta.type}
-                    </p>
-                    <p>
-                      <strong>Confidence:</strong> {msg.meta.confidence}
-                    </p>
-                    <p>
-                      <strong>Source:</strong> {msg.meta.source}
-                    </p>
+            <div key={i} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+              {msg.type === 'bot' ? (
+                <div className="max-w-lg w-full bg-gradient-to-br from-cyan-900 via-gray-900 to-black text-white p-5 rounded-2xl shadow-lg border border-cyan-700">
+                  <h3 className="text-lg font-bold flex items-center gap-2 mb-3">
+                    🩺 Health Summary
+                  </h3>
+                  <p className="mb-3 whitespace-pre-line">{msg.text}</p>
+                  {msg.meta && (
+                    <div className="grid grid-cols-1 gap-2 text-sm">
+                      <div className="flex items-center gap-2">
+                        ❤️ <span><strong>Type:</strong> {msg.meta.type}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        🌡️ <span><strong>Confidence:</strong> {msg.meta.confidence}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        📂 <span><strong>Source:</strong> {msg.meta.source}</span>
+                      </div>
+                    </div>
+                  )}
+                  <div className="mt-4 p-3 rounded-xl bg-gray-800 text-sm border border-gray-700">
+                    💊 <strong>Advice:</strong> Stay hydrated, rest well, and consult a doctor if symptoms persist.
                   </div>
-                )}
-              </div>
+                </div>
+              ) : (
+                <div className="max-w-lg p-4 rounded-2xl shadow-md bg-cyan-600 text-white rounded-br-none">
+                  <p className="whitespace-pre-line">{msg.text}</p>
+                  {msg.image && (
+                    <img
+                      src={msg.image}
+                      alt="uploaded"
+                      className="mt-3 max-w-[200px] rounded-lg border border-gray-700"
+                    />
+                  )}
+                </div>
+              )}
             </div>
           ))}
           {loading && (
