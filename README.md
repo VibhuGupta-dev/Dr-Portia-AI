@@ -1,48 +1,88 @@
-effective use of provided resources.
-Dr. Portia AI - Empowering Health with AI ✨
-Tagline: Accessible symptom and image analysis for a healthier India! 🌿
-Overview 🎉
-Dr. Portia AI is a groundbreaking medical analysis platform delivering preliminary insights from text-based symptoms and medical images. Crafted with the MERN stack (sans MongoDB), a powerful Flask backend, and fortified with Auth0, it tackles healthcare accessibility head-on, especially in rural India. Born from a hackathon, this scalable proof-of-concept promises a brighter health future!
-Why Dr. Portia AI? 🌍
-In India, where over 70% of the population in rural areas battles doctor shortages, Dr. Portia AI shines as a beacon of hope. Imagine a villager uploading an X-ray or typing “fever and cough” to get life-saving tips—prompting timely care! With potential ties to Ayushman Bharat Digital Mission, it bridges a critical healthcare gap with security and flair.
-How It Works 🚀
+# Dr. Portia AI ✨
+**Tagline:** Accessible symptom and image analysis for a healthier India! 🌿
 
-Frontend (React): Log in with Auth0, input symptoms, or upload images with ease.
-Backend (Node.js): Seamlessly manages API requests and hands off to Flask.
-Flask Backend: Powers advanced symptom and image analysis like a pro.
-Fallback System: Keeps the show running if Flask takes a break.
+## Overview 🎉
+Dr. Portia AI is a groundbreaking medical analysis platform delivering preliminary insights from **text-based symptoms** and **medical images**. Built using the **MERN stack (without MongoDB)**, a robust **Flask backend**, and secured with **Auth0**, it addresses healthcare accessibility challenges, particularly in rural India.
 
-(Add a dazzling diagram here if possible!)
-Features 🌟
+Originally born from a hackathon, this scalable proof-of-concept promises a brighter health future!
 
-Symptom Analysis: Detects conditions (e.g., “headache, fever”) from a database of 100+ symptoms.
-Medical Image Analysis: Handles PNG, JPG, DICOM, etc., with simulated diagnostics (e.g., X-ray, CT scan).
-Secure Authentication: Locks it down with Auth0 for total peace of mind.
-Comprehensive Reports: Blends text and image insights for a full picture.
-Fallback Mechanism: Delivers analysis even during server hiccups.
-API Endpoints: Rocks with /health, /api/analyze-medical, and /analyze.
+---
 
-Tools Utilized and Why 💡
+## Why Dr. Portia AI? 🌍
+In India, over **70% of the rural population faces doctor shortages**. Dr. Portia AI serves as a beacon of hope:
 
-local_file_reader_tool.py: Reads image metadata (e.g., size, type) in analyze_medical_image, slashing manual work and boosting efficiency.
-local_file_writer_tool.py: Saves temp files in temp_uploads and cleans up, enhancing security and resource flow.
-image_understanding_tool.py: Powers simulated medical image analysis, paving the way for AI diagnostics with hackathon flair.
+- A villager can upload an X-ray or type “fever and cough” to receive **life-saving preliminary insights**.
+- Bridges the critical healthcare gap with potential integration into **Ayushman Bharat Digital Mission**.
+- Combines security, speed, and user-friendly design to reach underserved communities.
 
-These tailored tools amp up reliability and highlight smart resource use!
-Limitations ⚠️
+---
 
-Image analysis is simulated, with real API integration on the horizon.
-Relies on rule-based symptom matching, ripe for ML upgrades.
+## How It Works 🚀
 
-Future Improvements 🌱
+**Frontend (React)**  
+- Auth0 login  
+- Symptom input & image upload  
 
-Integrate real medical imaging APIs.
-Add machine learning for symptom analysis.
-Explore Ayushman Bharat integration.
+**Backend (Node.js)**  
+- Handles API requests  
+- Hands off processing to Flask  
 
-Contributing 🤝
-Fork the repo, spin a branch, and send a pull request. Stick to the style guide and toss in tests!
-License 📜
-MIT License.
-Disclaimer ℹ️
-Dr. Portia AI is for informational use only. Always consult healthcare professionals for diagnosis.
+**Flask Backend**  
+- Performs advanced **symptom & image analysis**  
+
+**Fallback System**  
+- Ensures continuous service even if Flask is down  
+
+> ![Diagram Placeholder](link-to-diagram.png)  
+> *(Optional: Replace with an actual diagram showing React → Node.js → Flask → Response flow)*
+
+---
+
+## Features 🌟
+- **Symptom Analysis:** Detects conditions from a database of **100+ symptoms**.
+- **Medical Image Analysis:** Supports **PNG, JPG, DICOM**, with simulated diagnostics.
+- **Secure Authentication:** Auth0 ensures safe access.
+- **Comprehensive Reports:** Combines text and image insights for a holistic overview.
+- **Fallback Mechanism:** Maintains analysis even during server hiccups.
+- **API Endpoints:** `/health`, `/api/analyze-medical`, `/analyze`.
+
+---
+
+## Tools Utilized 💡
+- **local_file_reader_tool.py:** Reads image metadata (size, type), reducing manual effort.
+- **local_file_writer_tool.py:** Handles temporary file storage and cleanup, boosting security.
+- **image_understanding_tool.py:** Simulates medical image analysis, laying groundwork for AI diagnostics.
+
+These tools improve reliability and demonstrate efficient resource management.
+
+---
+
+## Limitations ⚠️
+- Image analysis is **simulated**; real API integration is upcoming.
+- Symptom analysis is **rule-based**, ready for ML upgrades.
+
+---
+
+## Future Improvements 🌱
+- Integrate **real medical imaging APIs**
+- Implement **ML-powered symptom analysis**
+- Explore **Ayushman Bharat integration**
+
+---
+
+## Contributing 🤝
+1. Fork the repository  
+2. Create a branch  
+3. Submit a pull request  
+
+> Follow the style guide and include tests.
+
+---
+
+## License 📜
+MIT License
+
+---
+
+## Disclaimer ℹ️
+Dr. Portia AI is **informational only**. Always consult qualified healthcare professionals for diagnosis and treatment.
