@@ -61,7 +61,7 @@ app.post('/api/analyze-medical', upload.single('medical_image'), async (req, res
         let pythonResponse;
         try {
             // Test Python service connection first
-            await axios.get('http://localhost:5001/health', { timeout: 5000 });
+            await axios.get('dr-portia-ai-1.onrender/health', { timeout: 5000 });
             
             // Prepare form data for Python service
             const formData = new FormData();
@@ -78,7 +78,7 @@ app.post('/api/analyze-medical', upload.single('medical_image'), async (req, res
             }
             
             // Call Python service
-            pythonResponse = await axios.post('http://localhost:5001/analyze-medical', formData, {
+            pythonResponse = await axios.post('dr-portia-ai-1.onrender/analyze-medical', formData, {
                 headers: {
                     ...formData.getHeaders()
                 },

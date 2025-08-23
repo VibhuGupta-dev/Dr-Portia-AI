@@ -17,7 +17,7 @@ function Dashboard() {
 
   const checkBackendStatus = async () => {
     try {
-      const response = await fetch("http://localhost:5000/health");
+      const response = await fetch("https://dr-portia-ai.onrender/health");
       setBackendStatus(response.ok ? "online" : "offline");
     } catch {
       setBackendStatus("offline");
@@ -51,7 +51,7 @@ function Dashboard() {
       if (inputText.trim()) formData.append("text", inputText.trim());
       if (selectedImage) formData.append("medical_image", selectedImage);
 
-      const response = await fetch("http://localhost:5000/api/analyze-medical", {
+      const response = await fetch("https://dr-portia-ai.onrender/api/analyze-medical", {
         method: "POST",
         body: formData,
       });
