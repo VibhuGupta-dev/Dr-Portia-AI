@@ -74,7 +74,7 @@ app.post('/api/analyze-medical', upload.single('medical_image'), async (req, res
     let pythonResponse;
     try {
       // Check Python service
-      await axios.get('http://localhost:5001/health', { timeout: 5000 });
+      await axios.get('https://dr-portia-ai-1.onrender.com/health', { timeout: 5000 });
 
       // Prepare form data
       const formData = new FormData();
@@ -88,7 +88,7 @@ app.post('/api/analyze-medical', upload.single('medical_image'), async (req, res
       formData.append('userId', req.body.userId || null); // Pass Auth0 userId
 
       // Call Python (Portia + Gemini)
-      pythonResponse = await axios.post('http://localhost:5001/analyze-medical', formData, {
+      pythonResponse = await axios.post('https://dr-portia-ai-1.onrender.com/analyze-medical', formData, {
         headers: { ...formData.getHeaders() },
         timeout: 30000,
       });

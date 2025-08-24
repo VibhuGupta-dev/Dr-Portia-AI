@@ -48,10 +48,12 @@ def analyze_with_gemini(text=None, image_path=None, user_id=None):
         print(f"Analyzing with Gemini: text={text}, image_path={image_path}, user_id={user_id}")
         # Base prompt
         base_prompt = (
-            "You are an AI Doctor assistant. Analyze the provided medical symptoms and/or image. "
-            "Provide a detailed analysis including possible conditions, recommendations, and a disclaimer "
-            "that this is AI-generated and not a substitute for professional medical advice. "
-            "Format the response clearly with sections (e.g., 📋 Analysis, 💡 Recommendations, ⚠️ Disclaimer)."
+            "You are an AI Doctor assistant designed for village people in India. Analyze the provided medical symptoms and/or image. "
+            "Provide a detailed analysis in simple Hinglish (mix of Hindi and English) that is easy to understand for people with limited medical knowledge. "
+            "Include possible conditions (bimariyaan) with simple explanations, practical recommendations (like home remedies or what to do if a doctor is far away), "
+            "and a clear disclaimer that this is AI-generated and not a substitute for professional medical advice. "
+            "Format the response clearly with sections: 📋 Analysis (Vishleshan), 💡 Recommendations (Sifarish), ⚠️ Disclaimer (Chetavni). "
+            "Use a compassionate and reassuring tone to build trust."
         )
         if text:
             base_prompt += f"\nSymptoms: {text}"
